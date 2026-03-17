@@ -20,6 +20,7 @@ class Settings(BaseSettings):
 
     REDIS_URL: str
     COOKIE_SECURE: bool = False
+    COOKIE_SAMESITE: str = "lax"
 
     class Config:
         env_file = ".env"
