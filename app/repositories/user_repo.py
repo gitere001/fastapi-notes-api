@@ -26,6 +26,5 @@ class UserRepository:
         return user
 
     def email_exists(self, email: str) -> bool:
-        return self.db.query(
-            (User).filter(User.email == email)
-            .first() is not None)
+        return (self.db.query(User)
+                .filter(User.email == email).first() is not None)
