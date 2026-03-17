@@ -1,9 +1,11 @@
 from contextlib import asynccontextmanager
-from app.db.redis import connect_redis, disconnect_redis
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from app.core.config import settings
 from app.api.v1.router import api_router
 from app.db import registry  # noqa: F401
+from app.db.redis import connect_redis, disconnect_redis
 
 
 @asynccontextmanager
@@ -21,6 +23,24 @@ app = FastAPI(
 )
 
 app.include_router(api_router, prefix="/api/v1")
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(
+    request: Request, exc: RequestValidationError
+) -> JSONResponse:
+    errors = exc.errors()
+    first_error = errors[0]
+    field = first_error["loc"][-1]
+    message = (
+        f"{field} is required"
+        if first_error["type"] == "missing"
+        else first_error["msg"]
+    )
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"success": False, "message": message},
+    )
 
 
 @app.get("/")
