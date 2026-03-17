@@ -15,6 +15,11 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_SECRET_KEY: str
+    REFRESH_TOKEN_EXPIRE_HOURS: int = 6
+
+    REDIS_URL: str
+    COOKIE_SECURE: bool = False
 
     class Config:
         env_file = ".env"
