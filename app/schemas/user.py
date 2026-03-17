@@ -21,10 +21,6 @@ class UserOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-
-class TokenData(BaseModel):
-    email: str | None = None
+class LoginResponse(BaseModel):
+    success: bool
+    message: str
