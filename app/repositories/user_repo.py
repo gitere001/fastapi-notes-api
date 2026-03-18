@@ -19,6 +19,7 @@ class UserRepository:
         user = User(
             email=data.email,
             hashed_password=hash_password(data.password),
+            full_name=data.full_name,
         )
         self.db.add(user)
         self.db.commit()
@@ -26,5 +27,4 @@ class UserRepository:
         return user
 
     def email_exists(self, email: str) -> bool:
-        return (self.db.query(User)
-                .filter(User.email == email).first() is not None)
+        return self.db.query(User).filter(User.email == email).first() is not None
