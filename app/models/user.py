@@ -12,6 +12,9 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    full_name = Column(String, nullable=True)
+    last_login = Column(DateTime, nullable=True)
+    profile_picture = Column(String, nullable=True)
 
     notes = relationship(
         "Note",
