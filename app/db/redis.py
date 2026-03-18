@@ -1,7 +1,8 @@
 import redis.asyncio as aioredis
 from app.core.config import settings
-
+from app.core.logging import get_logger
 redis_client: aioredis.Redis | None = None
+logger = get_logger(__name__)
 
 
 async def get_redis() -> aioredis.Redis:
@@ -16,11 +17,11 @@ async def connect_redis() -> None:
         decode_responses=True,
     )
     await redis_client.ping()
-    print("Redis connected successfully")
+    logger.info("Redis connected successful")
 
 
 async def disconnect_redis() -> None:
     global redis_client
     if redis_client:
         await redis_client.aclose()
-        print("Redis disconnected")
+        logger.info("Redis disconnected")
