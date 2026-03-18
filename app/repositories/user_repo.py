@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from app.models.user import User
 from app.schemas.user import UserCreate
 from app.core.security import hash_password
+from app.models.enums import UserRole
 
 
 class UserRepository:
@@ -15,11 +16,12 @@ class UserRepository:
     def get_by_id(self, user_id: int) -> User | None:
         return self.db.query(User).filter(User.id == user_id).first()
 
-    def create(self, data: UserCreate) -> User:
+    def create(self, data: UserCreate, role: UserRole = UserRole.USER) -> User:
         user = User(
             email=data.email,
             hashed_password=hash_password(data.password),
             full_name=data.full_name,
+            role=role
         )
         self.db.add(user)
         self.db.commit()
