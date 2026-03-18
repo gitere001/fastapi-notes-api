@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, status
-from fastapi.exceptions import RequestValidationError
+from fastapi.exceptions import RequestValidationError, HTTPException
 from fastapi.responses import JSONResponse
 from app.core.config import settings
 from app.api.v1.router import api_router
@@ -40,6 +40,14 @@ async def validation_exception_handler(
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content={"success": False, "message": message},
+    )
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"success": False, "message": exc.detail},
     )
 
 
