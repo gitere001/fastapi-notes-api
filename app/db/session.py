@@ -1,6 +1,11 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
+from sqlalchemy import text
+from app.core.logging import get_logger
+
+logger = get_logger(__name__)
+
 
 engine = create_engine(
     settings.DATABASE_URL,
@@ -23,3 +28,14 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def ping_db() -> None:
+    try:
+        db = SessionLocal()
+        db.execute(text("SELECT 1"))
+        logger.info("Database ping successful")
+        db.close()
+    except Exception as e:
+        logger.error(f"Database connection failed: {e}")
+        raise RuntimeError(f"Database connection failed: {e}")
