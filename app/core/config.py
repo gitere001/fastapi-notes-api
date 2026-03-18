@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_HOURS: int = 6
 
     REDIS_URL: str
+    SENTRY_DSN: str
     COOKIE_SECURE: bool = False
     COOKIE_SAMESITE: str = "lax"
 
