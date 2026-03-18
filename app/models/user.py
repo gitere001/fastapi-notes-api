@@ -2,6 +2,8 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from app.db.base import Base
+from sqlalchemy import Enum as SAEnum
+from app.models.enums import UserRole
 
 
 class User(Base):
@@ -15,8 +17,8 @@ class User(Base):
     full_name = Column(String, nullable=True)
     last_login = Column(DateTime, nullable=True)
     profile_picture = Column(String, nullable=True)
+    role = Column(
+        SAEnum(UserRole, name="user_role"), default=UserRole.USER, nullable=False
+    )
 
-    notes = relationship(
-        "Note",
-        back_populates="owner",
-        cascade="all, delete-orphan")
+    notes = relationship("Note", back_populates="owner", cascade="all, delete-orphan")
