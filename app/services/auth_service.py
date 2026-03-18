@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status, Response, Request
 from app.repositories.user_repo import UserRepository
-from app.schemas.user import UserCreate
+from app.schemas.user import UserCreate, AdminUserCreate
 from app.core.config import settings
 from app.core.security import (
     verify_password,
@@ -35,6 +35,14 @@ class AuthService:
                 detail="Email already registered",
             )
         return self.repo.create(data)
+
+    def create_admin_user(self, data: AdminUserCreate) -> User:
+        if self.repo.email_exists(data.email):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already registered",
+            )
+        return self.repo.create(data, role=data.role)
 
     async def login(self, email: str, password: str, response: Response) -> dict:
 
