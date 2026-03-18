@@ -16,6 +16,7 @@ from app.services.auth_service import (
     ACCESS_TOKEN_MAX_AGE,
 )
 import json
+from app.models.enums import UserRole
 
 
 async def get_current_user(
@@ -101,3 +102,14 @@ async def get_current_user(
     )
 
     return user
+
+
+def require_superadmin(
+    current_user: User = Depends(get_current_user),
+) -> User:
+    if current_user.role != UserRole.SUPERADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Superadmin access required",
+        )
+    return current_user
