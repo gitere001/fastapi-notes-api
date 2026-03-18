@@ -36,8 +36,7 @@ class AuthService:
             )
         return self.repo.create(data)
 
-    async def login(self, email: str,
-                    password: str, response: Response) -> dict:
+    async def login(self, email: str, password: str, response: Response) -> dict:
 
         user = self.repo.get_by_email(email)
         if not user:
