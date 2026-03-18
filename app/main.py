@@ -6,10 +6,23 @@ from app.core.config import settings
 from app.api.v1.router import api_router
 from app.db import registry  # noqa: F401
 from app.db.redis import connect_redis, disconnect_redis
+from app.db.session import ping_db
+from app.core.logging import get_logger, setup_logging
+
+import sentry_sdk
+sentry_sdk.init(
+    dsn=settings.SENTRY_DSN,
+    send_default_pii=True,
+    traces_sample_rate=0.1,
+)
+
+setup_logging()
+logger = get_logger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    ping_db()
     await connect_redis()
     yield
     await disconnect_redis()
